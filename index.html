@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Gym Logger — Registro de Pesos</title>
-  <meta name="description" content="by SoyKhaler" />
+  <meta name="description" content="Minimal and elegant gym log for GitHub Pages. Log exercises, weights, sets, reps and notes. Data saved to browser localStorage." />
   <style>
     :root{
       --bg:#0f1720; --card:#0b1220; --muted:#9aa4b2; --accent:#60a5fa; --glass:rgba(255,255,255,0.04);
@@ -86,7 +86,12 @@
           <button type="button" id="clearAll" class="btn" style="background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)">Borrar todo</button>
           <div style="margin-left:auto" class="small">Sugerencia: usa fecha y ejercicio para controlar progresión</div>
         </div>
-      </form>
+      $1
+<div style="margin-top:10px; display:flex; gap:8px;">
+  <button type="button" id="exportJson" class="btn" style="background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--accent)">Exportar JSON</button>
+  <button type="button" id="importJson" class="btn" style="background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--accent)">Importar JSON</button>
+  <input type="file" id="importFile" accept="application/json" style="display:none;"/>
+</div>
 
       <div id="tableWrap" style="margin-top:12px">
         <table id="logTable" aria-live="polite">
@@ -98,7 +103,7 @@
       </div>
 
       <footer>
-        by SoyKhaler
+        Guardado localmente. Para guardar online sube este HTML a GitHub Pages.
       </footer>
     </section>
   </div>
@@ -193,6 +198,35 @@
       const blob = new Blob([csv],{type:'text/csv'});
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a'); a.href=url; a.download='gym_log.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    });
+
+    // JSON Export
+    document.getElementById('exportJson').addEventListener('click', ()=>{
+      const data = load();
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href=url; a.download='gym_log.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    });
+
+    // JSON Import
+    document.getElementById('importJson').addEventListener('click', ()=>{
+      document.getElementById('importFile').click();
+    });
+
+    document.getElementById('importFile').addEventListener('change', (e)=>{
+      const file = e.target.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = ()=>{
+        try{
+          const json = JSON.parse(reader.result);
+          if(Array.isArray(json)){
+            save(json);
+            alert('Datos importados correctamente.');
+          } else alert('Formato JSON inválido.');
+        } catch(err){ alert('No se pudo leer el archivo.'); }
+      };
+      reader.readAsText(file);
     });
 
     // init default date

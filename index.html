@@ -2,264 +2,238 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Gym Logger — Registro de Pesos</title>
-  <meta name="description" content="Minimal and elegant gym log for GitHub Pages. Log exercises, weights, sets, reps and notes. Data saved to browser localStorage." />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gym Logger</title>
   <style>
-    :root{
-      --bg:#0f1720; --card:#101a28; --muted:#9aa4b2; --accent:#60a5fa;
-      --radius:14px; --pad:16px;
-      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto;
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --accent: #58a6ff;
+      --radius: 14px;
+      --shadow: 0 4px 20px rgba(0,0,0,0.3);
+      font-family: Inter, system-ui, sans-serif;
     }
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{background:#08111d;color:#e6eef8;min-height:100vh;display:flex;justify-content:center;padding:16px;}
-
-    /* APP WRAPPER */
-    .app{
-      width:100%;max-width:520px; /* tipo app móvil */
-      display:flex;flex-direction:column;gap:18px;
+    body {
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
     }
-
-    header h1{font-size:22px;font-weight:600;margin-bottom:4px}
-    header .lead{color:var(--muted);font-size:14px}
-
-    .card{
-      background:var(--card);
-      padding:var(--pad);
-      border-radius:var(--radius);
-      box-shadow:0 8px 20px rgba(0,0,0,0.45);
-      display:flex;
-      flex-direction:column;
-      gap:14px;
+    .app {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
-
-    /* FORM GRID -> STACKED ON MOBILE */
-    form.grid{
-      display:flex;
-      flex-direction:column;
-      gap:14px;
+    .card {
+      background: var(--card);
+      padding: 20px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
     }
-    label{font-size:13px;color:var(--muted);margin-bottom:4px}
-    input, button, select{
-      width:100%;padding:12px;
-      border-radius:10px;
-      border:1px solid rgba(255,255,255,0.08);
-      background:rgba(255,255,255,0.05);
-      color:#e6eef8;font-size:15px;
+    h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 600;
     }
-
-    button.btn{
-      background:linear-gradient(90deg,var(--accent),#3b82f6);
-      border:none;color:#041e34;font-weight:600;
-      cursor:pointer;
+    label {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 4px;
     }
-
-    /* TABLE */
-    table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
-    thead th{padding:8px;color:var(--muted);font-size:12px;text-align:left}
-    tbody td{padding:10px 6px;border-top:1px solid rgba(255,255,255,0.08)}
-    .actions button{padding:6px 8px;font-size:12px;background:rgba(255,255,255,0.06);border:none;border-radius:6px;margin-right:4px;cursor:pointer;color:var(--muted)}
-
-    /* RESPONSIVE */
-    @media(min-width:768px){
-      body{padding:40px;}
-      .app{max-width:680px;} /* estilo tipo app centradita en PC */
-      input,button,select{font-size:14px}
+    input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #30363d;
+      background: #0f141a;
+      color: var(--text);
+      font-size: 15px;
+    }
+    button {
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 15px;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-main {
+      background: var(--accent);
+      color: #041521;
+      font-weight: 600;
+    }
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .btn-secondary {
+      background: #21262d;
+      color: var(--muted);
+      border: 1px solid #30363d;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th {
+      text-align: left;
+      color: var(--muted);
+      font-size: 12px;
+      padding-bottom: 6px;
+    }
+    td {
+      padding: 8px 2px;
+      border-top: 1px solid #2d333b;
+    }
+    .actions button {
+      padding: 6px 8px;
+      font-size: 12px;
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div>
-        <h1>Gym Logger</h1>
-        <p class="lead">Registro rápido y minimalista de ejercicios, pesos y repeticiones. Guardado localmente.</p>
+  <div class="app">
+    <h1>Gym Logger</h1>
+
+    <div class="card">
+      <label>Fecha</label>
+      <input type="date" id="date">
+
+      <label>Ejercicio</label>
+      <input id="exercise" placeholder="Press banca, Jalón, Curl EZ...">
+
+      <label>Series</label>
+      <input id="sets" type="number" value="3">
+
+      <label>Reps</label>
+      <input id="reps" type="number" value="10">
+
+      <label>Peso (kg)</label>
+      <input id="weight" type="number" step="0.5">
+
+      <label>Notas</label>
+      <input id="notes" placeholder="opcional">
+
+      <div class="toolbar">
+        <button class="btn-main" id="add">Añadir registro</button>
+        <button class="btn-secondary" id="exportJson">Exportar JSON</button>
+        <button class="btn-secondary" id="importJson">Importar JSON</button>
+        <button class="btn-secondary" id="clearAll">Borrar todo</button>
+        <input type="file" id="importFile" accept="application/json" style="display:none;" />
       </div>
-      <div class="hero">
-        <div class="pill">LocalStorage • Privado</div>
-        <div class="pill" id="count">0 registros</div>
-      </div>
-    </header>
+    </div>
 
-    <section class="card">
-      <form id="logForm" class="grid" autocomplete="off">
-        <div class="col-6">
-          <label for="date">Fecha</label>
-          <input type="date" id="date" />
-        </div>
-        <div class="col-6">
-          <label for="exercise">Ejercicio</label>
-          <input id="exercise" placeholder="Press banca, Jalón, Curl EZ..." />
-        </div>
-        <div class="col-3">
-          <label for="sets">Series</label>
-          <input id="sets" type="number" min="1" value="3" />
-        </div>
-        <div class="col-3">
-          <label for="reps">Repeticiones</label>
-          <input id="reps" type="number" min="1" value="10" />
-        </div>
-        <div class="col-3">
-          <label for="weight">Peso (kg)</label>
-          <input id="weight" type="number" step="0.5" placeholder="25" />
-        </div>
-        <div class="col-3">
-          <label for="notes">Notas</label>
-          <input id="notes" placeholder="opcional" />
-        </div>
-
-        <div class="col-12" style="display:flex;gap:8px;margin-top:6px">
-          <button type="submit" class="btn">Añadir registro</button>
-          <button type="button" id="exportCsv" class="btn" style="background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--accent)">Exportar CSV</button>
-          <button type="button" id="clearAll" class="btn" style="background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)">Borrar todo</button>
-          <div style="margin-left:auto" class="small">Sugerencia: usa fecha y ejercicio para controlar progresión</div>
-        </div>
-      
-<div style="margin-top:10px; display:flex; gap:8px;">
-  <button type="button" id="exportJson" class="btn" style="background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--accent)">Exportar JSON</button>
-  <button type="button" id="importJson" class="btn" style="background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--accent)">Importar JSON</button>
-  <input type="file" id="importFile" accept="application/json" style="display:none;"/>
-</div>
-
-      <div id="tableWrap" style="margin-top:12px">
-        <table id="logTable" aria-live="polite">
-          <thead>
-            <tr><th>Fecha</th><th>Ejercicio</th><th>Series</th><th>Reps</th><th>Peso (kg)</th><th>Notas</th><th></th></tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-
-      <footer>
-        Guardado localmente. Para guardar online sube este HTML a GitHub Pages.
-      </footer>
-    </section>
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Ejercicio</th>
+            <th>Kg</th>
+            <th>Sets</th>
+            <th>Reps</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="log"></tbody>
+      </table>
+    </div>
   </div>
 
-  <script>
-    // Simple gym logger saved in localStorage
-    const KEY = 'gymlogger_v1_khaler';
-    const form = document.getElementById('logForm');
-    const tbody = document.querySelector('#logTable tbody');
-    const count = document.getElementById('count');
+<script>
+const KEY = "gym_log_v1";
+const logEl = document.getElementById("log");
 
-    function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
-    function load(){
-      const raw = localStorage.getItem(KEY);
-      return raw ? JSON.parse(raw) : [];
+const load = () => JSON.parse(localStorage.getItem(KEY) || "[]");
+const save = data => localStorage.setItem(KEY, JSON.stringify(data));
+
+function render() {
+  const data = load();
+  logEl.innerHTML = "";
+
+  data.slice().reverse().forEach(item => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${item.date}</td>
+      <td>${item.exercise}</td>
+      <td>${item.weight}</td>
+      <td>${item.sets}</td>
+      <td>${item.reps}</td>
+      <td><button class="btn-secondary" onclick="delItem('${item.id}')">X</button></td>
+    `;
+    logEl.appendChild(tr);
+  });
+}
+
+function delItem(id) {
+  const data = load().filter(x => x.id !== id);
+  save(data);
+  render();
+}
+
+document.getElementById("add").onclick = () => {
+  const item = {
+    id: Date.now().toString(),
+    date: document.getElementById("date").value,
+    exercise: document.getElementById("exercise").value,
+    sets: document.getElementById("sets").value,
+    reps: document.getElementById("reps").value,
+    weight: document.getElementById("weight").value,
+    notes: document.getElementById("notes").value,
+  };
+
+  const data = load();
+  data.push(item);
+  save(data);
+  render();
+};
+
+document.getElementById("exportJson").onclick = () => {
+  const blob = new Blob([JSON.stringify(load(), null, 2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "gym_log.json";
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+document.getElementById("importJson").onclick = () => document.getElementById("importFile").click();
+
+document.getElementById("importFile").onchange = e => {
+  const file = e.target.files[0];
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const json = JSON.parse(reader.result);
+      if (Array.isArray(json)) save(json);
+      render();
+    } catch {
+      alert("Archivo JSON inválido.");
     }
-    function save(data){ localStorage.setItem(KEY, JSON.stringify(data)); render(); }
+  };
+  reader.readAsText(file);
+};
 
-    function render(){
-      const items = load();
-      tbody.innerHTML = '';
-      items.slice().reverse().forEach(item => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td class="small">${item.date || ''}</td>
-          <td>${escapeHtml(item.exercise)}</td>
-          <td class="small">${item.sets}</td>
-          <td class="small">${item.reps}</td>
-          <td class="small">${item.weight || ''}</td>
-          <td class="small">${escapeHtml(item.notes||'')}</td>
-          <td class="actions"><button data-id="${item.id}" class="edit">Editar</button><button data-id="${item.id}" class="del">Borrar</button></td>`;
-        tbody.appendChild(tr);
-      });
-      count.textContent = items.length + ' registros';
-    }
-
-    function escapeHtml(s){ return String(s||'').replace(/[&<>\"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"})[c]); }
-
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-      const data = load();
-      const item = {
-        id: uid(),
-        date: document.getElementById('date').value || new Date().toISOString().slice(0,10),
-        exercise: document.getElementById('exercise').value.trim() || 'Ejercicio',
-        sets: parseInt(document.getElementById('sets').value)||3,
-        reps: parseInt(document.getElementById('reps').value)||10,
-        weight: document.getElementById('weight').value ? parseFloat(document.getElementById('weight').value) : '',
-        notes: document.getElementById('notes').value.trim()
-      };
-      data.push(item);
-      save(data);
-      form.reset();
-      document.getElementById('sets').value = 3; document.getElementById('reps').value = 10;
-    });
-
-    tbody.addEventListener('click', e => {
-      if(e.target.matches('.del')){
-        const id = e.target.dataset.id;
-        const items = load().filter(x=>x.id!==id);
-        save(items);
-      } else if(e.target.matches('.edit')){
-        const id = e.target.dataset.id;
-        const items = load();
-        const it = items.find(x=>x.id===id);
-        if(!it) return;
-        // populate form for editing: remove old and fill
-        document.getElementById('date').value = it.date || '';
-        document.getElementById('exercise').value = it.exercise || '';
-        document.getElementById('sets').value = it.sets || 3;
-        document.getElementById('reps').value = it.reps || 10;
-        document.getElementById('weight').value = it.weight || '';
-        document.getElementById('notes').value = it.notes || '';
-        // remove old
-        const rest = items.filter(x=>x.id!==id);
-        save(rest);
-      }
-    });
-
-    document.getElementById('clearAll').addEventListener('click', ()=>{
-      if(confirm('Borrar todos los registros?')){ localStorage.removeItem(KEY); render(); }
-    });
-
-    document.getElementById('exportCsv').addEventListener('click', ()=>{
-      const items = load();
-      if(!items.length) return alert('Sin registros para exportar');
-      const header = ['date','exercise','sets','reps','weight','notes'];
-      const rows = [header.join(',')].concat(items.map(i=>[
-        i.date,`"${i.exercise.replace(/"/g,'""') }"`,i.sets,i.reps,i.weight,`"${(i.notes||'').replace(/"/g,'""') }"`
-      ].join(',')));
-      const csv = rows.join('\n');
-      const blob = new Blob([csv],{type:'text/csv'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href=url; a.download='gym_log.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-    });
-
-    // JSON Export
-    document.getElementById('exportJson').addEventListener('click', ()=>{
-      const data = load();
-      const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href=url; a.download='gym_log.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-    });
-
-    // JSON Import
-    document.getElementById('importJson').addEventListener('click', ()=>{
-      document.getElementById('importFile').click();
-    });
-
-    document.getElementById('importFile').addEventListener('change', (e)=>{
-      const file = e.target.files[0];
-      if(!file) return;
-      const reader = new FileReader();
-      reader.onload = ()=>{
-        try{
-          const json = JSON.parse(reader.result);
-          if(Array.isArray(json)){
-            save(json);
-            alert('Datos importados correctamente.');
-          } else alert('Formato JSON inválido.');
-        } catch(err){ alert('No se pudo leer el archivo.'); }
-      };
-      reader.readAsText(file);
-    });
-
-    // init default date
-    document.getElementById('date').value = new Date().toISOString().slice(0,10);
+document.getElementById("clearAll").onclick = () => {
+  if (confirm("¿Borrar todo?")) {
+    localStorage.removeItem(KEY);
     render();
-  </script>
+  }
+};
+
+document.getElementById("date").value = new Date().toISOString().slice(0,10);
+render();
+</script>
 </body>
 </html>

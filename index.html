@@ -7,37 +7,65 @@
   <meta name="description" content="Minimal and elegant gym log for GitHub Pages. Log exercises, weights, sets, reps and notes. Data saved to browser localStorage." />
   <style>
     :root{
-      --bg:#0f1720; --card:#0b1220; --muted:#9aa4b2; --accent:#60a5fa; --glass:rgba(255,255,255,0.04);
-      --radius:12px; --pad:14px;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      --bg:#0f1720; --card:#101a28; --muted:#9aa4b2; --accent:#60a5fa;
+      --radius:14px; --pad:16px;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto;
     }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;background:linear-gradient(180deg,#081023 0%,#07111a 100%);color:#e6eef8}
-    .wrap{max-width:960px;margin:36px auto;padding:20px}
-    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
-    h1{font-size:20px;margin:0;font-weight:600;letter-spacing:0.2px}
-    p.lead{margin:4px 0 0;color:var(--muted);font-size:13px}
-    .card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:0 6px 18px rgba(2,6,23,0.6);}
-    form.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:10px;align-items:end}
-    label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
-    input,select,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:var(--glass);color:inherit;font-size:14px}
-    .col-6{grid-column:span 6}
-    .col-4{grid-column:span 4}
-    .col-3{grid-column:span 3}
-    .col-12{grid-column:span 12}
-    .row{display:flex;gap:8px}
-    button.btn{background:linear-gradient(90deg,var(--accent),#3b82f6);border:none;padding:10px 14px;border-radius:10px;color:#04243a;font-weight:600;cursor:pointer}
-    .muted{color:var(--muted);font-size:13px}
-    table{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}
-    thead th{font-weight:600;text-align:left;padding:10px 8px;color:var(--muted);font-size:12px}
-    tbody td{padding:10px 8px;border-top:1px solid rgba(255,255,255,0.02)}
-    .small{font-size:13px;color:var(--muted)}
-    .actions button{margin-right:6px;padding:6px 8px;border-radius:8px;border:none;background:rgba(255,255,255,0.03);color:var(--muted);cursor:pointer}
-    .toolbar{display:flex;gap:8px;align-items:center}
-    .hero{display:flex;gap:12px;align-items:center}
-    .pill{background:rgba(255,255,255,0.03);padding:8px 10px;border-radius:999px;font-size:13px}
-    footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:center}
-    @media(max-width:720px){.col-6{grid-column:span 12}.col-4{grid-column:span 12}.col-3{grid-column:span 12}}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:#08111d;color:#e6eef8;min-height:100vh;display:flex;justify-content:center;padding:16px;}
+
+    /* APP WRAPPER */
+    .app{
+      width:100%;max-width:520px; /* tipo app móvil */
+      display:flex;flex-direction:column;gap:18px;
+    }
+
+    header h1{font-size:22px;font-weight:600;margin-bottom:4px}
+    header .lead{color:var(--muted);font-size:14px}
+
+    .card{
+      background:var(--card);
+      padding:var(--pad);
+      border-radius:var(--radius);
+      box-shadow:0 8px 20px rgba(0,0,0,0.45);
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+
+    /* FORM GRID -> STACKED ON MOBILE */
+    form.grid{
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+    label{font-size:13px;color:var(--muted);margin-bottom:4px}
+    input, button, select{
+      width:100%;padding:12px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.08);
+      background:rgba(255,255,255,0.05);
+      color:#e6eef8;font-size:15px;
+    }
+
+    button.btn{
+      background:linear-gradient(90deg,var(--accent),#3b82f6);
+      border:none;color:#041e34;font-weight:600;
+      cursor:pointer;
+    }
+
+    /* TABLE */
+    table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
+    thead th{padding:8px;color:var(--muted);font-size:12px;text-align:left}
+    tbody td{padding:10px 6px;border-top:1px solid rgba(255,255,255,0.08)}
+    .actions button{padding:6px 8px;font-size:12px;background:rgba(255,255,255,0.06);border:none;border-radius:6px;margin-right:4px;cursor:pointer;color:var(--muted)}
+
+    /* RESPONSIVE */
+    @media(min-width:768px){
+      body{padding:40px;}
+      .app{max-width:680px;} /* estilo tipo app centradita en PC */
+      input,button,select{font-size:14px}
+    }
   </style>
 </head>
 <body>
@@ -86,7 +114,7 @@
           <button type="button" id="clearAll" class="btn" style="background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)">Borrar todo</button>
           <div style="margin-left:auto" class="small">Sugerencia: usa fecha y ejercicio para controlar progresión</div>
         </div>
-      $1
+      
 <div style="margin-top:10px; display:flex; gap:8px;">
   <button type="button" id="exportJson" class="btn" style="background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--accent)">Exportar JSON</button>
   <button type="button" id="importJson" class="btn" style="background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--accent)">Importar JSON</button>

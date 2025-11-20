@@ -198,6 +198,41 @@
       const a = document.createElement('a'); a.href=url; a.download='gym_log.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
     });
 
+    // JSON Export
+    document.getElementById('exportJson').addEventListener('click', ()=>{
+      const data = load();
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'gym_log.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    // JSON Import
+    document.getElementById('importJson').addEventListener('click', ()=>{
+      document.getElementById('importFile').click();
+    });
+
+    document.getElementById('importFile').addEventListener('change', e => {
+      const file = e.target.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const json = JSON.parse(reader.result);
+          if(Array.isArray(json)){
+            save(json);
+            alert('Datos importados correctamente');
+          } else alert('Formato JSON inválido');
+        } catch(err){ alert('Error leyendo JSON'); }
+      };
+      reader.readAsText(file);
+    });
+
     // init default date
     document.getElementById('date').value = new Date().toISOString().slice(0,10);
     render();
